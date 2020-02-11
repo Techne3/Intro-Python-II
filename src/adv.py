@@ -1,4 +1,5 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -49,3 +50,16 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+
+name = input('Enter a player name')
+
+
+while True:
+    player = Player(name, room['outside'])
+    cardinal_direction = input(
+        "Select a direction: [n] North [s] South [e] East [w] West [q] Quit\n")
+
+    if(cardinal_direction == 'q'):
+        print("\n Time for a break")
+        exit()
