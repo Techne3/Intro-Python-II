@@ -52,14 +52,27 @@ room['treasure'].s_to = room['narrow']
 # If the user enters "q", quit the game.
 
 
-name = input('Enter a player name')
+# player starts off in the outside room
+player = Player(input("Please enter your name: "), room['outside'])
 
 
 while True:
-    player = Player(name, room['outside'])
-    cardinal_direction = input(
-        "Select a direction: [n] North [s] South [e] East [w] West [q] Quit\n")
+    # print player name and where they are currently located
+    print(f"{player.name} You are currently in {player.current_room.name}")
+    # print the description of the room
+    print(player.current_room.description)
 
-    if(cardinal_direction == 'q'):
+    cmd = input(
+        "~~~>  Select a direction: [n] North [s] South [e] East [w] West [q] Quit\n ")
+    # define the directions
+    direction = {'n': 'n_to', 's': 's_to', 'e': 'e_to', 'w': 'w_to'}
+
+    # game logic
+    if len(cmd) == 1:
+        player.current_room = getattr(
+            player.current_room, direction[cmd])
+    elif(cmd == 'q'):
         print("\n Time for a break")
         exit()
+    else:
+        print('Invalid input, please select another option')
