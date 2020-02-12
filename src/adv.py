@@ -57,21 +57,21 @@ player = Player(input("Please enter your name: "), room['outside'])
 
 
 while True:
-    # print player name and where they are currently located
-    print(f"{player.name} You are currently in {player.current_room.name}")
-    # print the description of the room
-    print(player.current_room.description)
 
-    cmd = input(
-        "~~~>  Select a direction: [n] North [s] South [e] East [w] West [q] Quit\n ")
+   
+# Print player name along with the current room and its description - This comes from player def_str_
+    print(f'{player}')
+
+    player_input = input(
+        "~~~> Choose your destination: [n] North [s] South [e] East [w] West [q] Quit\n ")
     # define the directions
     direction = {'n': 'n_to', 's': 's_to', 'e': 'e_to', 'w': 'w_to'}
 
-    # game logic
-    if len(cmd) == 1:
+    # game logic 
+    if player_input in direction:
         player.current_room = getattr(
-            player.current_room, direction[cmd])
-    elif(cmd == 'q'):
+            player.current_room, direction[player_input])
+    elif(player_input == 'q'):
         print("\n Time for a break")
         exit()
     else:
