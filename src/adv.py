@@ -55,6 +55,12 @@ room['treasure'].s_to = room['narrow']
 # player starts off in the outside room
 player = Player(input("Please enter your name: "), room['outside'])
 
+def move_player(next_room):
+    if next_room != None:
+        player.current_room = next_room
+    else:
+        print(f"{player.name}, looks like you may have hit a dead end, time to recalculate and head in a new direction. ")
+
 
 while True:
 
@@ -65,14 +71,23 @@ while True:
     player_input = input(
         "~~~> Choose your destination: [n] North [s] South [e] East [w] West [q] Quit\n ")
     # define the directions
-    direction = {'n': 'n_to', 's': 's_to', 'e': 'e_to', 'w': 'w_to'}
+    # direction = {'n': 'n_to', 's': 's_to', 'e': 'e_to', 'w': 'w_to'}
+    direction = {'n', 'e', 's', 'w'}
 
     # game logic 
     if player_input in direction:
-        player.current_room = getattr(
-            player.current_room, direction[player_input])
+        if player_input[0] == 'n':
+            move_player(player.current_room.n_to)
+        elif player_input[0] == 's':
+            move_player(player.current_room.s_to)
+        elif player_input[0] == 'e':
+            move_player(player.current_room.e_to)
+        elif player_input[0] == 'w':
+            move_player(player.current_room.w_to)
+        # player.current_room = getattr(
+        #     player.current_room, direction[player_input])
     elif(player_input == 'q'):
-        print("\n Time for a break")
+        print("\n Rest up for the next quest")
         exit()
     else:
-        print('Invalid input, please select another option')
+        print('INVALID OPTION, please select another option')
