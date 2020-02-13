@@ -71,3 +71,10 @@ while True:
         print("I did not understand that command.")
 
 
+ if len(move) == 1:
+        try:
+            if cmd in ["n", "s", "e", "w"]:
+                player.travel(cmd)
+            elif cmd == "q":
+                print("Goodbye!")
+                exit()

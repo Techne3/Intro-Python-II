@@ -1,34 +1,46 @@
-# Write a class to hold player information, e.g. what room they are in
-# currently.
-# from room import Room
-
 from item import Item
 
 class Player:
-    def __init__(self, name, current_room):
+    def __init__(self, name, room):
         self.name = name
-        self.current_room = current_room
+        self.room = room
         self.inventory = []
-
-    def change_room(self, move_room):
-        self.current_room = move_room
+        self.items =[]
 
     def __str__(self):
-        return (f'Player: {self.name} \n Location: {self.current_room.name} \n {self.current_room.description} ')
+        return f"Player: {self.name}"
 
+    def travel(self, direction):
+        next_room = getattr(self.room, f"{direction}_to")
+        if next_room is not None:
+            self.room = next_room
+            print(self.room)
+        else:
+            print("You cannot move in that direction")      
+
+#  * If it is there, remove it from the `Room` contents, and add it to the
+#  inventory
     def add_items(self, item):
-        if item in self.current_room.items:
-            self.current_room.items.remove(item)
+        if (len( self.room.items)):
+            self.room.items.remove(item)
             self.inventory.append(item)
             item.on_take()
         else:
             print("That item is not in this room.")
 
+#  remove items from the inventory.
+    def drop_items(self, item):
+        if (len( self.inventory)):
+            self.inventory.remove(item)
+            self.room.items.append(item)
+            item.on_drop()
+        else:
+            print("This item is not in your inventory.")
 
+# view your current inventory
     def view_inventory(self):
         if len(self.inventory) > 0:
-            for i in self.inventory:
-                print(self.inventory)
+           
+            print(f"Items in current inventory {self.inventory}")
         else:
-            print("There are no items in your inventory.")
-
+            print("There are currently no items in your inventory.")

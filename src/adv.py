@@ -2,27 +2,61 @@ from room import Room
 from player import Player
 from item import Item
 
+# Add items to the game that the user can carry around
+
+# items = {
+#     'backpack':    Item("[backpack]",
+#                      "small backpack to hold items"),
+#     'lantern':   Item("lantern",
+#                      "Lanter to help light your path"),
+#     'sword':     Item("sword",
+#                      "Long blade steel sword, could come in handy"),
+#     'compass':      Item("compass",
+#                      "compass to navigate your way"),
+#     'treasure':    Item("treasure",
+#                      "treasure chest filled with gold coins"),
+# }
+
+
 
 
 # Declare all the rooms
-
 room = {
     'outside':  Room("Outside Cave Entrance",
                      "North of you, the cave mount beckons",
-                   ),
+                    ),
+
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east.""",),
+passages run north and east.""",
+                    ),
+
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm.""",),
+the distance, but there is no way across the chasm.""",
+                   ),
+
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air.""",),
+to north. The smell of gold permeates the air.""",
+                    ),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south.""",),
+earlier adventurers. The only exit is to the south.""",
+                    ),
 }
 
+backback = Item('backpack', 'small backpack to hold items')
+lantern = Item('lantern', 'Lanter to help light your path')
+sword = Item('sword', 'Long blade steel sword, could come in handy')
+compass = Item('compass', 'compass to navigate your way')
+treasure = Item('treasure', 'treasure chest filled with gold coins')
+
+room['outside'].items.append(backback)
+room['foyer'].items.append(lantern)
+room['overlook'].items.append(sword)
+
+
+# Link rooms together
 
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
@@ -33,82 +67,58 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-# items in the game
-backpack = Item('backpack', "small backpack to hold items")
-lantern = Item('lantern', "Lanter to help light your path")
-sword = Item('sword', "Long blade steel sword, could come in handy")
-compass = Item('compass', "compass to navigate your way")
-treasure = Item('treasure', "treasure chest filled with gold coins")
-
-# append the items to rooms
-room['outside'].items.append(backpack)
-room['foyer'].items.append(lantern)
-room['overlook'].items.append(sword)
-room['narrow'].items.append(compass)
-room['treasure'].items.append(treasure)
-
-
 
 #
 # Main
 #
 
-# Make a new player object that is currently in the 'outside' room.
-
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
-
-
-# player starts off in the outside room
-player = Player(input("Please enter your name: "), room['outside'])
-
-def move_player(move_location):
-    if move_location != None:
-        player.current_room = move_location
-    else:
-        print(f"{player.name}, looks like you may have hit a dead end, time to recalculate and head in a new direction. ")
+print("***************************************************")
+player_name = input("Enter character name: ")
+player = Player(player_name, room['outside'])
+print(f"Get ready to start your quest {player.name}!")
+print("\n***************************************************")
 
 
 while True:
 
-   
-# Print player name along with the current room and its description - This comes from player def_str_
-    print(f'{player}')
+    print(f"\n{player.room.name}, {player.room.description}")
+    for item in player.room.items:
+        print(f"\nItems in current room: {item.item_name}")
+
+    print(f"\nItems in your inventory:", player.inventory)
 
 
-    player_input = input(
-        "~~~> Choose an option: [n] North [s] South [e] East [w] West [q] Quit\n ")
-    # actions = player_input.split(" ")
-    # define the directions
-    # direction = {'n': 'n_to', 's': 's_to', 'e': 'e_to', 'w': 'w_to'}
-    direction = ['n', 'e', 's', 'w','g','d','v',]
+    cmd = input("~~~> Choose an option: [n] North [s] South [e] East [w] West [q] Quit\n" ).lower()
 
-    if player_input in direction:
-        attempted_room = getattr(player.current_room, f"{player_input}_to")
-        if attempted_room != None:
-            player.change_room(attempted_room)
+    if len(cmd) == 1:
+            # if cmd == 'n':
+            #     player.room = player.room.n_to
+            # elif cmd == 's':
+            #     player.room = player.room.s_to
+            # elif cmd == 'e':
+            #     player.room = player.room.e_to
+            # elif cmd == 'w':
+            #     player.room = player.room.w_to
+            # elif cmd == 'q':
+            #     break
+            #     print("\nThank you for playing! Goodbye!")
+            # else:
+            #     print("\nThis movement is not allowed, please try again.\n")
+        if cmd in ["n", "s", "e", "w"]:
+            player.travel(cmd)
+        elif cmd == "q":
+            print("Rest up for your next quest")
+            exit()
         else:
-            print("Movement in that direction invalid")
+            print("I did not understand that command.")
 
-    elif player_input == 'q':
-        exit()
-    else:
-        print("Input not valid, please try again")
-
-        # elif player_input[0] == 'g':
-        #      player.add_items(sword)
-        # elif player_input[0] == 'v':
-        #      player.view_inventory()
-
-   
-
-
-   
+    if len(cmd) >= 2:
+        if cmd == f'get {item.item_name}':
+            player.add_items(item)
+            # room.remove_item(item)
+        if cmd == f'drop {item.item_name}':
+            player.drop_items(item)
+        if cmd =='view':
+            player.view_inventory()
+        else:
+            print("\nEnter get item or drop item to add/remove items from your inventory")
