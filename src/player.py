@@ -50,7 +50,7 @@ class Player:
                     self.inventory.remove(items)
                     items.on_drop()
                 else:
-                    print('fuckthisshit')
+                    print('that item is not in your inventory')
 
 
 
